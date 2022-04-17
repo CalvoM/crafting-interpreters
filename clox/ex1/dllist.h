@@ -13,7 +13,7 @@ typedef struct StringList{
 
 void insert_str_node(str_list_t *list, char *new_content) {
     if(strncmp(new_content, "\0",1) == 0) return ;
-    size_t str_len = sizeof(new_content)/sizeof(new_content[0]);
+    size_t str_len = strlen(new_content) + 1;
     str_node_t *node = (struct StringNode*)malloc(sizeof(struct StringNode));
     node->next, node->prev = NULL, NULL;
     node->content = (char*)malloc(sizeof(char) * str_len);
@@ -34,10 +34,45 @@ void insert_str_node(str_list_t *list, char *new_content) {
     return ;
 }
 
-str_node_t find_str_node(str_list_t *list, char *content_to_find) {
-    
+str_node_t* find_str_node(str_list_t *list, char *content_to_find) {
+   str_node_t *curr = list->head;
+   size_t str_len = strlen(content_to_find) + 1;
+   if(strncmp(curr->content, content_to_find, str_len) == 0)  return curr;
+   while(curr->next != NULL) {
+       if(strncmp(curr->content, content_to_find, str_len) == 0){
+           return curr;
+       }
+        curr = curr->next;
+   }
+   return NULL;
 }
 
 void delete_str_node(str_list_t *list, char *content_to_delete) {
+    str_node_t * del_node = find_str_node(list, content_to_delete);
+    if(del_node == NULL) return ;
+    str_node_t *next = del_node->next;
+    del_node->prev->next = next;
+    free(del_node);
+}
+
+void free_mem(str_list_t *list) {
+    str_node_t * node = list->head;
+    while(node->next != NULL) {
+        free(node->content);
+        node = node->next;
+        free(node->prev);
+    }
+    free(node->content);
+    free(node);
+    free(list);
+}
+
+void print_list(str_list_t *list) {
+    str_node_t * node = list->head;
+    while(node->next != NULL) {
+        printf("%s\n", node->content);
+        node = node->next;
+    }
+    printf("%s\n", node->content);
 
 }
