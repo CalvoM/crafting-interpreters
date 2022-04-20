@@ -56,15 +56,19 @@ void delete_str_node(str_list_t *list, char *content_to_delete) {
 }
 
 void free_mem(str_list_t *list) {
-    str_node_t * node = list->head;
-    while(node->next != NULL) {
-        free(node->content);
-        node = node->next;
-        free(node->prev);
+    if(list != NULL) {
+        str_node_t * node = list->head;
+        if(node != NULL) {
+            while(node->next != NULL) {
+                free(node->content);
+                node = node->next;
+                free(node->prev);
+            }
+            free(node->content);
+            free(node);
+            free(list);
+        }
     }
-    free(node->content);
-    free(node);
-    free(list);
 }
 
 void print_list(str_list_t *list) {
